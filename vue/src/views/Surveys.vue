@@ -10,47 +10,32 @@
         </TButton>
       </div>
     </template>
-    <div v-if="surveys.loading" class="flex justify-center">Loading...</div>
-    <div v-else-if="surveys.data.length">
-      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
-        <SurveyListItem
-          v-for="(survey, ind) in surveys.data"
-          :key="survey.id"
-          :survey="survey"
-          class="opacity-0 animate-fade-in-down"
-          :style="{ animationDelay: `${ind * 0.1}s` }"
-          @delete="deleteSurvey(survey)"
-        />
-      </div>
-      <div class="flex justify-center mt-5">
-        <nav
-          class="relative z-0 inline-flex justify-center rounded-md shadow-sm -space-x-px"
-          aria-label="Pagination"
-        >
-          <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
-          <a
-            v-for="(link, i) of surveys.links"
-            :key="i"
-            :disabled="!link.url"
-            href="#"
-            @click="getForPage($event, link)"
-            aria-current="page"
-            class="relative inline-flex items-center px-4 py-2 border text-sm font-medium whitespace-nowrap"
-            :class="[
-              link.active
-                ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
-                : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50',
-              i === 0 ? 'rounded-l-md bg-gray-100 text-gray-700' : '',
-              i === surveys.links.length - 1 ? 'rounded-r-md' : '',
-            ]"
-            v-html="link.label"
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+      <div
+        v-for="survey in surveys"
+        :key="survey.id"
+        class="flex flex-col py-4 px-6 shadow-md bg-white hover:bg-gray-50 h-[470px]"
+      >
+        <img :src="survey.image" alt="" class="w-full h-48 object-cover" />
+        <h4 class="mt-4 text-lg font-bold">{{ survey.title }}</h4>
+        <div v-html="survey.description" class="overflow-hidden flex-1"></div>
+        <div class="flex justify-between items-center mt-3">
+          <router-link
+            :to="{ name: 'SurveyView', params: { id: survey.id } }"
+            class="flex py-2 px-4 border border-transparent text-sm rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-          </a>
-        </nav>
+            Edit
+          </router-link>
+          <button
+            v-if="survey.id"
+            type="button"
+            @click="deleteSurvey(survey)"
+            class="h-8 w-8 flex items-center justify-center rounded-full border border-transparent text-sm text-red-500 focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          >
+            Hapus
+          </button>
+        </div>
       </div>
-    </div>
-    <div v-else class="text-gray-600 text-center py-16">
-      Your don't have surveys yet
     </div>
   </PageComponent>
 </template>
@@ -58,8 +43,8 @@
 <script setup>
 import store from "../store";
 import { computed } from "vue";
-import {PlusIcon} from "@heroicons/vue/solid"
-import TButton from '../components/core/TButton.vue'
+import { PlusIcon } from "@heroicons/vue/solid";
+import TButton from "../components/core/TButton.vue";
 import PageComponent from "../components/PageComponent.vue";
 import SurveyListItem from "../components/SurveyListItem.vue";
 

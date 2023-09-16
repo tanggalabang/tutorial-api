@@ -5,8 +5,7 @@
         <h1 class="text-3xl font-bold text-gray-900">
           {{ route.params.id ? model.title : "Create a Survey" }}
         </h1>
-
-        <div class="flex">
+        <!-- <div class="flex">
           <TButton v-if="model.slug" link :href="`/view/survey/${model.slug}`" target="_blank" class="mr-2">
             <ExternalLinkIcon class="w-5 h-5" />
             View Public link
@@ -15,7 +14,7 @@
             <TrashIcon class="w-5 h-5 mr-2" />
             Delete
           </TButton>
-        </div>
+        </div> -->
       </div>
     </template>
     <div v-if="surveyLoading" class="flex justify-center">Loading...</div>
@@ -30,8 +29,8 @@
             </label>
             <div class="mt-1 flex items-center">
               <img
-                v-if="model.image_url"
-                :src="model.image_url"
+                v-if="model.image"
+                :src="model.image"
                 :alt="model.title"
                 class="w-64 h-48 object-cover"
               />
@@ -195,7 +194,7 @@
 // import { v4 as uuidv4 } from "uuid";
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { SaveIcon, TrashIcon, ExternalLinkIcon } from '@heroicons/vue/solid'
+import { SaveIcon, TrashIcon, ExternalLinkIcon } from "@heroicons/vue/solid";
 import store from "../store";
 import PageComponent from "../components/PageComponent.vue";
 import QuestionEditor from "../components/editor/QuestionEditor.vue";
@@ -221,99 +220,102 @@ let model = ref({
 });
 
 // Watch to current survey data change and when this happens we update local model
-watch(
-  () => store.state.currentSurvey.data,
-  (newVal, oldVal) => {
-    model.value = {
-      ...JSON.parse(JSON.stringify(newVal)),
-      status: !!newVal.status,
-    };
-  }
-);
+// watch(
+//   () => store.state.currentSurvey.data,
+//   (newVal, oldVal) => {
+//     model.value = {
+//       ...JSON.parse(JSON.stringify(newVal)),
+//       status: !!newVal.status,
+//     };
+//   }
+// );
 
 // If the current component is rendered on survey update route we make a request to fetch survey
 if (route.params.id) {
-  store.dispatch("getSurvey", route.params.id);
+  model.value = store.state.surveys.find(
+    (s) => s.id === parseInt(route.params.id)
+  );
+  // store.dispatch("getSurvey", route.params.id);
 }
 
-function onImageChoose(ev) {
-  const file = ev.target.files[0];
+// function onImageChoose(ev) {
+//   const file = ev.target.files[0];
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    // The field to send on backend and apply validations
-    model.value.image = reader.result;
+//   const reader = new FileReader();
+//   reader.onload = () => {
+//     // The field to send on backend and apply validations
+//     model.value.image = reader.result;
 
-    // The field to display here
-    model.value.image_url = reader.result;
-    ev.target.value = "";
-  };
-  reader.readAsDataURL(file);
-}
+//     // The field to display here
+//     model.value.image_url = reader.result;
+//     ev.target.value = "";
+//   };
+//   reader.readAsDataURL(file);
+// }
 
-function addQuestion(index) {
-  const newQuestion = {
-    id: uuidv4(),
-    type: "text",
-    question: "",
-    description: null,
-    data: {},
-  };
+// function addQuestion(index) {
+//   const newQuestion = {
+//     id: uuidv4(),
+//     type: "text",
+//     question: "",
+//     description: null,
+//     data: {},
+//   };
 
-  model.value.questions.splice(index, 0, newQuestion);
-}
+//   model.value.questions.splice(index, 0, newQuestion);
+// }
 
-function deleteQuestion(question) {
-  model.value.questions = model.value.questions.filter((q) => q !== question);
-}
+// function deleteQuestion(question) {
+//   model.value.questions = model.value.questions.filter((q) => q !== question);
+// }
 
-function questionChange(question) {
-  // Important to explicitelly assign question.data.options, because otherwise it is a Proxy object
-  // and it is lost in JSON.stringify()
-  if (question.data.options) {
-    question.data.options = [...question.data.options];
-  }
-  model.value.questions = model.value.questions.map((q) => {
-    if (q.id === question.id) {
-      return JSON.parse(JSON.stringify(question));
-    }
-    return q;
-  });
-}
+// function questionChange(question) {
+//   // Important to explicitelly assign question.data.options, because otherwise it is a Proxy object
+//   // and it is lost in JSON.stringify()
+//   if (question.data.options) {
+//     question.data.options = [...question.data.options];
+//   }
+//   model.value.questions = model.value.questions.map((q) => {
+//     if (q.id === question.id) {
+//       return JSON.parse(JSON.stringify(question));
+//     }
+//     return q;
+//   });
+// }
 
-/**
- * Create or update survey
- */
-function saveSurvey() {
-  let action = "created";
-  if (model.value.id) {
-    action = "updated";
-  }
-  store.dispatch("saveSurvey", { ...model.value }).then(({ data }) => {
-    store.commit("notify", {
-      type: "success",
-      message: "The survey was successfully " + action,
-    });
-    router.push({
-      name: "SurveyView",
-      params: { id: data.data.id },
-    });
-  });
-}
+// /**
+//  * Create or update survey
+//  */
+// function saveSurvey() {
+//   let action = "created";
+//   if (model.value.id) {
+//     action = "updated";
+//   }
+//   store.dispatch("saveSurvey", { ...model.value }).then(({ data }) => {
+//     store.commit("notify", {
+//       type: "success",
+//       message: "The survey was successfully " + action,
+//     });
+//     router.push({
+//       name: "SurveyView",
+//       params: { id: data.data.id },
+//     });
+//   });
+// }
 
-function deleteSurvey() {
-  if (
-    confirm(
-      `Are you sure you want to delete this survey? Operation can't be undone!!`
-    )
-  ) {
-    store.dispatch("deleteSurvey", model.value.id).then(() => {
-      router.push({
-        name: "Surveys",
-      });
-    });
-  }
-}
+// function deleteSurvey() {
+//   if (
+//     confirm(
+//       `Are you sure you want to delete this survey? Operation can't be undone!!`
+//     )
+//   ) {
+//     store.dispatch("deleteSurvey", model.value.id).then(() => {
+//       router.push({
+//         name: "Surveys",
+//       });
+//     });
+//   }
+// }
 </script>
 
 <style></style>

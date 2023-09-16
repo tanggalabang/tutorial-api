@@ -288,13 +288,13 @@ function upperCaseFirst(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function getOptions() {
-  return model.value.data.options;
-}
+// function getOptions() {
+//   return model.value.data.options;
+// }
 
-function setOptions(options) {
-  model.value.data.options = options;
-}
+// function setOptions(options) {
+//   model.value.data.options = options;
+// }
 
 // Check if the question should have options
 function shouldHaveOptions() {
