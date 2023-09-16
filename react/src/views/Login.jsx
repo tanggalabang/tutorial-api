@@ -1,11 +1,11 @@
 import { LockClosedIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
-// import { Link } from "react-router-dom";
-// import axiosClient from "../axios";
-// import { useStateContext } from "../contexts/ContextProvider";
+import { Link } from "react-router-dom";
+import axiosClient from "../axios";
+import { useStateContext } from "../contexts/ContextProvider";
 
 export default function Login() {
-  // const { setCurrentUser, setUserToken } = useStateContext();
+  const { setCurrentUser, setUserToken } = useStateContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState({ __html: "" });
@@ -42,12 +42,12 @@ export default function Login() {
       </h2>
       <p className="mt-2 text-center text-sm text-gray-600">
         Or{" "}
-        {/* <Link
+        <Link
           to="/signup"
           className="font-medium text-indigo-600 hover:text-indigo-500"
         >
           signup for free
-        </Link> */}
+        </Link>
       </p>
 
       {error.__html && (
