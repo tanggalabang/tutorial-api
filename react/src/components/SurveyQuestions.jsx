@@ -1,7 +1,7 @@
 import {PlusIcon} from "@heroicons/react/24/outline";
 import {useEffect} from "react";
 import {useState} from "react";
-// import {v4 as uuidv4} from "uuid";
+import {v4 as uuidv4} from "uuid";
 import QuestionEditor from "./QuestionEditor";
 
 export default function SurveyQuestions({questions, onQuestionsUpdate}) {

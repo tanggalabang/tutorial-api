@@ -2,10 +2,10 @@ import { LinkIcon, PhotoIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import TButton from "../components/core/TButton";
 import PageComponent from "../components/PageComponent";
-// import axiosClient from "../axios.js";
+import axiosClient from "../axios.js";
 import { useNavigate, useParams } from "react-router-dom";
 import SurveyQuestions from "../components/SurveyQuestions";
-// import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { useEffect } from "react";
 import { useStateContext } from "../contexts/ContextProvider";
 
