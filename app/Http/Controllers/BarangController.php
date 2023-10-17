@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\BarangImport;
 use App\Models\Barang;
 use Illuminate\Http\Request;
 
@@ -12,5 +13,19 @@ class BarangController extends Controller
         return view('welcome', [
             'barangs' => Barang::all()
         ]);
+    }
+
+    public function import(Request $request)
+    {
+        $file = $request->file('file')->store('public/import');
+
+        $import = new BarangImport;
+        $import->import($file);
+
+        if ($import->failures()->isNotEmpty()) {
+            return back()->withFailures($import->failures());
+        }
+
+        return redirect('/')->with('success', 'Data berhasil disimpan');
     }
 }
