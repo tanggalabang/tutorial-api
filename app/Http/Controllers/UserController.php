@@ -59,11 +59,11 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    // public function get(Request $request): UserResource
-    // {
-    //     $user = Auth::user();
-    //     return new UserResource($user);
-    // }
+    public function get(Request $request): UserResource
+    {
+        $user = Auth::user();
+        return new UserResource($user);
+    }
 
     // public function update(UserUpdateRequest $request): UserResource
     // {
