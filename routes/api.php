@@ -1,27 +1,30 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ValidationController;
-use Illuminate\Http\Request;
+use App\Http\Middleware\VerifySocietyToken;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SocietyController;
+use App\Http\Controllers\JobVacancyController;
+use App\Http\Controllers\JobApplicationController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-// routes/api.php
-
+// Authentication Routes
 Route::post('/v1/auth/login', [AuthController::class, 'login']);
 Route::post('/v1/auth/logout', [AuthController::class, 'logout']);
-Route::post('/v1/auth/validation', [ValidationController::class, 'validation']);
+
+// Protected Routes for Authenticated Societies
+// Route::middleware(['society_auth'])->group(function () {
+Route::middleware(VerifySocietyToken::class)->group(function () {
+    // Data Validation Routes
+    Route::post('/v1/validations', [SocietyController::class, 'requestDataValidation']);
+    Route::get('/v1/validations', [SocietyController::class, 'getSocietyDataValidation']);
+
+    // Job Vacancy Routes
+    Route::get('/v1/job_vacancies', [JobVacancyController::class, 'getAllJobVacancies']);
+    // Route::get('/v1/job_vacancies', [JobVacancyController::class, 'getJobVacancyDetail']);
+    Route::get('/v1/job_vacancies/{id}', [JobVacancyController::class, 'getJobVacancyDetail']);
+
+
+    // Job Application Routes
+    Route::post('/v1/applications', [JobApplicationController::class, 'applyForJob']);
+    Route::get('/v1/applications', [JobApplicationController::class, 'getAllSocietyJobApplications']);
+});
