@@ -24,8 +24,7 @@ class AuthController extends Controller
         }
 
         $token = md5($society->id_card_number);
-        $society->login_tokens = $token;
-        $society->save();
+        $society->update(['login_tokens' => $token]);
 
         return response()->json([
             'name' => $society->name,
